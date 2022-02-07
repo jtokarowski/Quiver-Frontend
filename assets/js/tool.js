@@ -27,6 +27,10 @@
     });
 
     function setInitial(response) {
+        // Hide loader, show main
+        $('#startUp').remove()
+        $('#main').show()
+
         // Filter out excluded items
         foodDB = response.values.filter(item => item.length > 0)
         // console.log(foodDB)
@@ -88,7 +92,7 @@
     function setInitialTable() {
         // Create array of items 
         tableItems = [];
-        for (i = 1; i < 21; i++) {
+        for (i = 1; i < 11; i++) {
             // Random items
             var index = Math.trunc(Math.random() * 6000)
             if (!yourFoods.includes(foodDB[index][4])) {
@@ -130,7 +134,7 @@
                     tableItems.push([i, foodDB[i][0], foodDB[i][1], foodDB[i][2], foodDB[i][3], color, foodDB[i][4]])
                 }
             }
-            if (tableItems.length == 20) {
+            if (tableItems.length == 10) {
                 break;
             }
 
