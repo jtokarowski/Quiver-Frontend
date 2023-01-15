@@ -69,8 +69,7 @@
 			<div class="align-center">
 				<form
 					style="width:fit-content;height: fit-content; margin:auto;padding: 2px;border: 1px solid #555;border-radius: 5px;"
-					id="searchForm"
-					>
+					id="searchForm">
 					<input style="min-width: 300px;max-width: 400px; border: none;height:inherit;" type="search"
 						id="searchInput" placeholder="Search FRED Data...">
 					<button type="submit" id="searchButton">Search</button>
@@ -90,10 +89,13 @@
 				margin: auto;">
 					<thead style="top: 0; position: sticky; background-color: white;">
 						<tr>
-							<th>Food</th>
-							<th>Category</th>
-							<!-- <th>Score</th> -->
-							<th>Grade</th>
+							<th>Name</th>
+							<th>Frequency</th>
+							<th>Start Date</th>
+							<th>End Date</th>
+							<th>Units</th>
+							<!-- Units should have units short, and seasonal adj note -->
+							<!-- 'title', 'frequency', 'frequency_short', 'observation_start', 'observation_end', 'tix' -->
 						</tr>
 					</thead>
 					<tbody id="outputTableBody" style="text-align: left;">
@@ -102,9 +104,39 @@
 			</div>
 
 			<br>
+			<br>
 
 			<!-- Comparison List -->
-			<div class="w3-container" style="margin: 25px 0 25px 0">
+			<header class="align-center">
+				<h2><u>Your Data</u></h2>
+				<h4>Click on an item to remove it</h4>
+			</header>
+
+			<div class="table-wrapper" style="max-height: 850px; margin: auto;">
+				<table style="
+							/* width: fit-content; */
+							font-size: 80%;
+							max-width: min(max-content,100%);
+							/* white-space: nowrap; */
+							margin: auto;">
+					<thead style="top: 0; position: sticky; background-color: white;">
+						<tr>
+							<th>Name</th>
+							<th>Frequency</th>
+							<th>Start Date</th>
+							<th>End Date</th>
+							<th>Units</th>
+							<!-- Units should have units short, and seasonal adj note -->
+							<!-- 'title', 'frequency', 'frequency_short', 'observation_start', 'observation_end', 'tix' -->
+						</tr>
+					</thead>
+					<tbody id="compTableBody" style="text-align: left;">
+					</tbody>
+				</table>
+			</div>
+
+			<!-- Old table -->
+			<!-- <div class="w3-container" style="margin: 25px 0 25px 0">
 				<header class="align-center">
 					<h2><u>Your Data</u></h2>
 					<h4>Click on an item to remove it</h4>
@@ -113,7 +145,7 @@
 				<ul class="w3-ul w3-card-4" id="compList">
 
 				</ul>
-			</div>
+			</div> -->
 
 			<br>
 			<br>

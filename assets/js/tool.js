@@ -8,8 +8,6 @@
             event.preventDefault();
             fredSearch();
         })
-        // $('#randomFoods').click(setInitialTable);
-        // searchInput();
 
     });
 
@@ -17,73 +15,93 @@
     function fredSearch() {
 
         var input = document.getElementById("searchInput").value;
-        console.log(input)
+        // console.log(input)
 
         // Send search term to backend to hit FRED API
 
         // Recieve resposne here - temp placeholder:
 
         // Test Data
-        var searchResponse = [['title', 'frequency', 'frequency_short', 'observation_start', 'observation_end', 'tix']
-            , ['title', 'frequency', 'frequency_short', 'observation_start', 'observation_end', 'tix']]
+        var searchResponse = [
+            ['Real User Cost Index of MSI-ALL Assets (alternative)', 'Monthly', 'M', '1967-01-01', '2013-12-01', 'OCALLA', '%', 'NSA']
+            , ['title', 'frequency', 'frequency_short', 'observation_start', 'observation_end', 'tix', 'units_short', 'seasonal_adjustment_short']
+            , ['title', 'frequency', 'frequency_short', 'observation_start', 'observation_end', 'tix', 'units_short', 'seasonal_adjustment_short']
+        ]
 
         searchHandler(searchResponse)
-
     }
 
+    // Function that recieves response data from backend and then...
     function searchHandler(searchData) {
-
-        // Recieves response data from backend and then...
 
         // Clear table items
         tableItems = searchData;
         console.log(searchData)
         // Add search results to table
-        createTable();
+        createSearchTable();
     }
 
-    function createTable() {
+    function createSearchTable() {
 
         $("#outputTableBody").empty();
 
         var table_body = document.getElementById('outputTableBody');
 
-        var tableSorted = tableItems
-        // console.log(tableSorted)
+        // Filter out results that exist in current data table and limit result #
+        // Grab IDs of current favorited datasets
+        var comp_table_body = document.getElementById('compTableBody');
+        var activeData = []
+        for (i = 0; i < comp_table_body.rows.length; i++) {
+            activeData.push(comp_table_body.rows[i].id)
+        }
 
-        /////////////////////// LEFT OFF HERE - Make the search results table formatted to relevant results ////////////////
+        // Exclude active dataseats from search
+        var tableSorted = tableItems.filter(x => !activeData.includes(x[5]));
 
         for (i = 0; i < tableSorted.length; i++) {
 
             var tr = table_body.insertRow(-1)
-            tr.id = tableSorted[i][6]
+            tr.id = tableSorted[i][5]
             tr.title = tableSorted[i][0]
             tr.style.cursor = "pointer"
+            // Add data
+            // Name
             var tc = tr.insertCell(-1)
-            tc.innerHTML = tableSorted[i][1]
+            tc.innerHTML = tableSorted[i][0]
+            // Freq
             var tc = tr.insertCell(-1)
             tc.innerHTML = tableSorted[i][2]
+            // StartDate
+            var tc = tr.insertCell(-1)
+            tc.innerHTML = tableSorted[i][3]
+            // EndDate
             var tc = tr.insertCell(-1)
             tc.innerHTML = tableSorted[i][4]
-            tc.style.fontWeight = '900'
-            tc.style.color = tableSorted[i][5]
+            // Units
+            var tc = tr.insertCell(-1)
+            tc.innerHTML = tableSorted[i][6].concat(', ', tableSorted[i][7])
+            // tc.style.fontWeight = '900'
+            // tc.style.color = tableSorted[i][5]
         }
 
         // Add listener to table items
         document.querySelectorAll('tr').forEach(item => {
-            // console.log(item.parentElement.tagName)
             if (item.parentElement.tagName == 'TBODY')
-                // console.log(item)
                 item.addEventListener('click', function () {
-                    yourFoods.push(item.id)
-                    // Hide row
-                    item.style.display = 'none';
-                    // Re run the your foods script
-                    yourFoodsTable();
+                    console.log(item)
+                    var newItem = item
+                    newItem.addEventListener('click', function (e) {
+                        $(this).remove()
+                    })
+                    $("#compTableBody").append(item)
                 })
         })
-
     }
+
+
+    //////////////////// LEFT OFF HERE - NOW NEED TO LET USER CHOOSE OUTPUT DATE FREQUENCY AND ADD OPTIONS FOR HOW TO UP/DOWN SAMPLE DATA //////////////
+
+
 
 
     function searchInput() {
@@ -164,27 +182,27 @@
     }
 
     // Sets random list of foods
-    function setInitialTable() {
-        // Create array of items 
-        tableItems = [];
-        for (i = 1; i < 11; i++) {
-            // Random items
-            var index = Math.trunc(Math.random() * 6000)
-            if (!yourFoods.includes(foodDB[index][4])) {
-                var food = foodDB[index][0]
-                var category = foodDB[index][1]
-                var score = foodDB[index][2]
-                var grade = foodDB[index][3]
-                var colorIndex = grades.findIndex((e) => e == grade)
-                var color = colors[colorIndex]
-                var id = foodDB[index][4]
-                tableItems.push([index, food, category, score, grade, color, id])
-            }
-        }
+    // function setInitialTable() {
+    //     // Create array of items 
+    //     tableItems = [];
+    //     for (i = 1; i < 11; i++) {
+    //         // Random items
+    //         var index = Math.trunc(Math.random() * 6000)
+    //         if (!yourFoods.includes(foodDB[index][4])) {
+    //             var food = foodDB[index][0]
+    //             var category = foodDB[index][1]
+    //             var score = foodDB[index][2]
+    //             var grade = foodDB[index][3]
+    //             var colorIndex = grades.findIndex((e) => e == grade)
+    //             var color = colors[colorIndex]
+    //             var id = foodDB[index][4]
+    //             tableItems.push([index, food, category, score, grade, color, id])
+    //         }
+    //     }
 
-        createTable();
+    //     createTable();
 
-    }
+    // }
 
 
 
