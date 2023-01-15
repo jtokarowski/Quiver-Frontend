@@ -88,7 +88,7 @@
 
     function searchInput() {
 
-        var ApiKey = '68b8933c6514e1f57dd6b6064b405731'
+        var ApiKey = ''
         var searchPhrase = 'gold'
         var resultLimit = 5
 
