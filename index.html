@@ -1,3 +1,4 @@
+.'
 <!DOCTYPE HTML>
 <!--
 	Intensify by TEMPLATED
@@ -7,7 +8,7 @@
 <html>
 
 <head>
-	<title>Foodify</title>
+	<title>Quiver</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<link rel="stylesheet" href="assets/css/main.css" />
@@ -30,10 +31,10 @@
 
 	<!-- Header -->
 	<header id="header">
-		<a href="index.html" class="logo">Foodify</a>
+		<a href="index.html" class="logo">Quiver</a>
 	</header>
 
-	<section id="startUp" class="wrapper">
+	<!-- <section id="startUp" class="wrapper">
 
 		<h1 class="align-center">Foodify Loading</h1>
 
@@ -55,25 +56,29 @@
 			</div>
 		</div>
 
-	</section>
+	</section> -->
 
 	<!-- Main -->
-	<section id="main" class="wrapper" style="display: none;">
+	<section id="main" class="wrapper">
 		<div class="inner" style="max-width: 900px;">
 			<header class="align-center" style="margin-bottom: 35px;">
-				<h2>Find Healthy Foods</h2>
+				<h2>Stitch together datasets from <u style="color: green;"><a href="https://fred.stlouisfed.org/"
+							target="_blank">FRED</a></u></h2>
 			</header>
 
-			<div style="margin: auto; width: max-content;">
-				<input id="randomFoods" type="button" class="button" value="Randomize Foods"
-					style="width: 175px; padding: 0;">
+			<div class="align-center">
+				<form
+					style="width:fit-content;height: fit-content; margin:auto;padding: 2px;border: 1px solid #555;border-radius: 5px;"
+					id="searchForm"
+					>
+					<input style="min-width: 300px;max-width: 400px; border: none;height:inherit;" type="search"
+						id="searchInput" placeholder="Search FRED Data...">
+					<button type="submit" id="searchButton">Search</button>
+				</form>
 			</div>
+			<!-- <span><i class="fa fa-solid fa-search"></i></span> -->
 			<br>
-			<p class="align-center">OR</p>
-			<input style="max-width: 400px; margin: auto;" type="text" id="searchInput"
-				placeholder="Search for foods..">
-			<br>
-			<h4 class="align-center">Click on an item to add it to <a href="#compList"><u>Your Foods</u></a></h4>
+			<h4 class="align-center">Click on an item to add it to <a href="#compList"><u>Your Data</u></a></h4>
 			<br>
 			<!-- Output table -->
 			<div class="table-wrapper" style="max-height: 850px; margin: auto;">
@@ -101,7 +106,7 @@
 			<!-- Comparison List -->
 			<div class="w3-container" style="margin: 25px 0 25px 0">
 				<header class="align-center">
-					<h2><u>Your Foods</u></h2>
+					<h2><u>Your Data</u></h2>
 					<h4>Click on an item to remove it</h4>
 				</header>
 
@@ -113,14 +118,6 @@
 			<br>
 			<br>
 
-			Source Data: <a target="_blank"
-				href="https://www.ars.usda.gov/northeast-area/beltsville-md-bhnrc/beltsville-human-nutrition-research-center/food-surveys-research-group/docs/fndds-download-databases/">USDA</a>
-			<br>
-			<br>
-			Foodhealth scores are derived from micro and macro nutrient content per calorie.
-			<br>
-			<br>
-
 		</div>
 	</section>
 
@@ -129,8 +126,8 @@
 		<div class="inner">
 			<h2>Get In Touch</h2>
 			<ul class="actions">
-				<li><span class="icon fa-twitter"></span> <a target="_blank"
-						href="https://twitter.com/robbieN1234">Twitter</a></li>
+				<u><a style="font-weight: bold; color: black;" href="mailto:nwr7794@gmail.com">Email
+						Us!</a></u>
 			</ul>
 		</div>
 	</footer>

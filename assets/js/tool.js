@@ -1,42 +1,117 @@
 
 (function inputScopeWrapper($) {
 
-
-    // Grab the dietDB data during page load
     $(function onDocReady() {
 
-        var keyProd = 'AIzaSyDaqR3scLgh4Dw26glrQ2BfDHiMJKzDIz4'
-        var keyTest = 'AIzaSyAGYgfzU5Lo2-OsFVMySI7UNzjxl_4EkQQ' ///////////////////////////////////////// Make sure right one active pre-commit
-
-        $.ajax({
-            method: 'GET',
-            url: 'https://sheets.googleapis.com/v4/spreadsheets/1e1xYZZx8uQ788Sq5hOrPg8ggTdYZWgb_fgs05yP516w/values/Output!A1:E7084?majorDimension=ROWS&key=' + keyProd,
-            // contentType: 'application/json',
-            success: setInitial,
-            error: function ajaxError(jqXHR, textStatus, errorThrown) {
-                console.error('Error pulling data: ', textStatus, ', Details: ', errorThrown);
-                console.error('Response: ', jqXHR.responseText);
-                // alert('An error occured when pulling the diet DB:\n' + jqXHR.responseText);
-            }
-        });
-
-        // $('#buttonModel').click(dietModel);
-        $('#searchInput').keyup(tableSearch);
-        $('#randomFoods').click(setInitialTable);
+        // $('#searchForm').submit(fredSearch);
+        $('#searchForm').on('submit', function (event) {
+            event.preventDefault();
+            fredSearch();
+        })
+        // $('#randomFoods').click(setInitialTable);
+        // searchInput();
 
     });
 
+    // Function that sends search key to backend to trigger search
+    function fredSearch() {
+
+        var input = document.getElementById("searchInput").value;
+        console.log(input)
+
+        // Send search term to backend to hit FRED API
+
+        // Recieve resposne here - temp placeholder:
+
+        // Test Data
+        var searchResponse = [['title', 'frequency', 'frequency_short', 'observation_start', 'observation_end', 'tix']
+            , ['title', 'frequency', 'frequency_short', 'observation_start', 'observation_end', 'tix']]
+
+        searchHandler(searchResponse)
+
+    }
+
+    function searchHandler(searchData) {
+
+        // Recieves response data from backend and then...
+
+        // Clear table items
+        tableItems = searchData;
+        console.log(searchData)
+        // Add search results to table
+        createTable();
+    }
+
+    function createTable() {
+
+        $("#outputTableBody").empty();
+
+        var table_body = document.getElementById('outputTableBody');
+
+        var tableSorted = tableItems
+        // console.log(tableSorted)
+
+        /////////////////////// LEFT OFF HERE - Make the search results table formatted to relevant results ////////////////
+
+        for (i = 0; i < tableSorted.length; i++) {
+
+            var tr = table_body.insertRow(-1)
+            tr.id = tableSorted[i][6]
+            tr.title = tableSorted[i][0]
+            tr.style.cursor = "pointer"
+            var tc = tr.insertCell(-1)
+            tc.innerHTML = tableSorted[i][1]
+            var tc = tr.insertCell(-1)
+            tc.innerHTML = tableSorted[i][2]
+            var tc = tr.insertCell(-1)
+            tc.innerHTML = tableSorted[i][4]
+            tc.style.fontWeight = '900'
+            tc.style.color = tableSorted[i][5]
+        }
+
+        // Add listener to table items
+        document.querySelectorAll('tr').forEach(item => {
+            // console.log(item.parentElement.tagName)
+            if (item.parentElement.tagName == 'TBODY')
+                // console.log(item)
+                item.addEventListener('click', function () {
+                    yourFoods.push(item.id)
+                    // Hide row
+                    item.style.display = 'none';
+                    // Re run the your foods script
+                    yourFoodsTable();
+                })
+        })
+
+    }
+
+
+    function searchInput() {
+
+        var ApiKey = '68b8933c6514e1f57dd6b6064b405731'
+        var searchPhrase = 'gold'
+        var resultLimit = 5
+
+        $.ajax({
+            method: 'GET',
+            url: 'https://api.stlouisfed.org/fred/series/search?file_type=json&limit=' + resultLimit + '&search_text=' + searchPhrase + '&api_key=' + ApiKey,
+            success: searchResponse,
+            error: function ajaxError(jqXHR, textStatus, errorThrown) {
+                console.error('Error pulling data: ', textStatus, ', Details: ', errorThrown);
+                console.error('Response: ', jqXHR.responseText);
+            }
+        });
+    }
+
+    function searchResponse(response) {
+        // console.log(response)
+        // var searchResponseTable = response
+        // console.log(searchResponseTable)
+    }
+
+
+
     function setInitial(response) {
-        // Hide loader, show main
-        $('#startUp').remove()
-        $('#main').show()
-
-        // Filter out excluded items
-        foodDB = response.values.filter(item => item.length > 0)
-        // console.log(foodDB)
-        // Set initial foods list
-        yourFoods = ['32202025', '61210010', '24208500', '56203085', '32130440', '27540310', '27510551', '27446360', '13120730']
-
         yourFoodsTable();
         setInitialTable();
 
@@ -111,94 +186,9 @@
 
     }
 
-    function tableSearch() {
-
-        // Declare variables
-        // var input, filter, table, tr, td, i, txtValue;
-        var input = document.getElementById("searchInput");
-        var filter = input.value.toUpperCase();
-        // table = document.getElementById("myTable");
-        // tr = table.getElementsByTagName("tr");
-        // food
-
-        // Clear table items
-        tableItems = [];
-
-        // Loop through all table rows, and hide those who don't match the search query
-        for (i = 1; i < foodDB.length; i++) {
-            var name = foodDB[i][0].toUpperCase();
-            if (name.includes(filter)) {
-                if (!yourFoods.includes(foodDB[i][4])) {
-                    var colorIndex = grades.findIndex((e) => e == foodDB[i][3])
-                    var color = colors[colorIndex]
-                    tableItems.push([i, foodDB[i][0], foodDB[i][1], foodDB[i][2], foodDB[i][3], color, foodDB[i][4]])
-                }
-            }
-            if (tableItems.length == 10) {
-                break;
-            }
-
-        }
-
-        // console.log(tableItems)
-
-        // document.getElementById('outputTableBody').remove();
-        // $("#outputTableBody").empty();
-        createTable();
-
-
-    }
 
 
 
-    function createTable() {
-
-        $("#outputTableBody").empty();
-
-        var table_body = document.getElementById('outputTableBody');
-
-        // Sort table items from highest score to lowest
-        var tableSorted = tableItems.sort(function (a, b) {
-            return b[3] - a[3];
-        });
-
-
-        // console.log(tableSorted)
-
-        for (i = 0; i < tableSorted.length; i++) {
-
-            var tr = table_body.insertRow(-1)
-            tr.id = tableSorted[i][6]
-            tr.title = tableSorted[i][3]
-            tr.style.cursor = "pointer"
-            var tc = tr.insertCell(-1)
-            tc.innerHTML = tableSorted[i][1]
-            var tc = tr.insertCell(-1)
-            tc.innerHTML = tableSorted[i][2]
-            var tc = tr.insertCell(-1)
-            tc.innerHTML = tableSorted[i][4]
-            tc.style.fontWeight = '900'
-            tc.style.color = tableSorted[i][5]
-        }
-
-        // Add listener to table items
-        document.querySelectorAll('tr').forEach(item => {
-            // console.log(item.parentElement.tagName)
-            if (item.parentElement.tagName == 'TBODY')
-                // console.log(item)
-                item.addEventListener('click', function () {
-                    yourFoods.push(item.id)
-                    // Hide row
-                    item.style.display = 'none';
-                    // Re run the your foods script
-                    yourFoodsTable();
-                })
-        })
-
-
-
-
-    }
 
 
 
