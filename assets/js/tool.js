@@ -14,6 +14,9 @@
     // Function that sends search key to backend to trigger search
     function fredSearch() {
 
+        // Display loader
+        $('#searchLoader').show()
+
         var input = document.getElementById("searchInput").value;
         // console.log(input)
 
@@ -24,7 +27,7 @@
         // Test Data
         var searchResponse = [
             ['Real User Cost Index of MSI-ALL Assets (alternative)', 'Monthly', 'M', '1967-01-01', '2013-12-01', 'OCALLA', '%', 'NSA']
-            , ['title', 'frequency', 'frequency_short', 'observation_start', 'observation_end', 'tix', 'units_short', 'seasonal_adjustment_short']
+            , ['Divisia Money Index: Household Sector and Private Non-Financial Corporations in the United Kingdom', 'Quarterly', 'Q', '1977-01-01', '2016-10-01', 'DMIHHPNFCUKQ', 'Index 1977:Q1=100', 'SA']
             , ['title', 'frequency', 'frequency_short', 'observation_start', 'observation_end', 'tix', 'units_short', 'seasonal_adjustment_short']
         ]
 
@@ -42,6 +45,9 @@
     }
 
     function createSearchTable() {
+
+        // Hide loader
+        $('#searchLoader').hide()
 
         $("#outputTableBody").empty();
 
@@ -71,6 +77,8 @@
             // Freq
             var tc = tr.insertCell(-1)
             tc.innerHTML = tableSorted[i][2]
+            // console.log(tc)
+            // tc.style = 'text-align: center;vertical-align: middle;'
             // StartDate
             var tc = tr.insertCell(-1)
             tc.innerHTML = tableSorted[i][3]
@@ -84,22 +92,60 @@
             // tc.style.color = tableSorted[i][5]
         }
 
-        // Add listener to table items
-        document.querySelectorAll('tr').forEach(item => {
+        // Add listener to search table items
+        table_body.querySelectorAll('tr').forEach(item => {
             if (item.parentElement.tagName == 'TBODY')
+                // If search table item is clicked:
                 item.addEventListener('click', function () {
-                    console.log(item)
-                    var newItem = item
-                    newItem.addEventListener('click', function (e) {
-                        $(this).remove()
-                    })
-                    $("#compTableBody").append(item)
+                    // Create new item and remove event listeners
+                    var newItem = item.cloneNode(true);
+                    item.parentNode.replaceChild(newItem, item);
+
+                    // console.log('This is your newitem: ')
+                    // console.log(newItem)
+
+                    // Add data mod option to item
+                    var tc = newItem.insertCell(-1)
+                    tc.innerHTML =
+                        `<select style="width: fit-content;">
+                    <option value="down_interpolate">Interpolate</option>
+                    <option value="weekly">Average</option>
+                    <option value="monthly">Sum</option>
+                    <option value="quarterly">Fill</option>
+                    <option value="quarterly">Prorate</option>
+                    </select>`
+
+                    // console.log('Your data item: var xxx')
+                    // console.log(xxx = newItem)
+
+                    // Add item to comp table
+                    $("#compTableBody").append(newItem)
+
+                    var itemCells = newItem.querySelectorAll('td')
+                    for (i = 0; i < itemCells.length - 1; i++) {
+                        // console.log('listener for click remove is applied to: ')
+                        // console.log(itemCells[i])
+                        itemCells[i].addEventListener('click', function (e) {
+                            // console.log('This is the parent element of the clicked cell:')
+                            // console.log(itemCells[i].parentElement)
+                            itemCells[i].parentElement.remove()
+                        })
+                    }
+
+                    // newItem.addEventListener('click', function (e) {
+                    //     $(this).remove()
+                    // })
+
+
                 })
         })
+
     }
 
 
     //////////////////// LEFT OFF HERE - NOW NEED TO LET USER CHOOSE OUTPUT DATE FREQUENCY AND ADD OPTIONS FOR HOW TO UP/DOWN SAMPLE DATA //////////////
+    //////////////////// WHEN USER CHANGES OUTPUT DATE FREQUENCY, SHOULD CHANGE THE DATA UP/DOWN SAMPLE METHODS FOR EACH SERIES /////////////
+    //////////////////// NEED TO REFORMAT OUTPUT DATA FREQUENCY INPUT /////////////
 
 
 

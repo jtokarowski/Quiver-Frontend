@@ -34,33 +34,9 @@
 		<a href="index.html" class="logo">Quiver</a>
 	</header>
 
-	<!-- <section id="startUp" class="wrapper">
-
-		<h1 class="align-center">Foodify Loading</h1>
-
-		<div style="margin: auto; width: max-content;">
-
-			<div class="lds-spinner">
-				<div></div>
-				<div></div>
-				<div></div>
-				<div></div>
-				<div></div>
-				<div></div>
-				<div></div>
-				<div></div>
-				<div></div>
-				<div></div>
-				<div></div>
-				<div></div>
-			</div>
-		</div>
-
-	</section> -->
-
 	<!-- Main -->
 	<section id="main" class="wrapper">
-		<div class="inner" style="max-width: 900px;">
+		<div class="inner" style="max-width: 1200px;">
 			<header class="align-center" style="margin-bottom: 35px;">
 				<h2>Stitch together datasets from <u style="color: green;"><a href="https://fred.stlouisfed.org/"
 							target="_blank">FRED</a></u></h2>
@@ -79,6 +55,7 @@
 			<br>
 			<h4 class="align-center">Click on an item to add it to <a href="#compList"><u>Your Data</u></a></h4>
 			<br>
+
 			<!-- Output table -->
 			<div class="table-wrapper" style="max-height: 850px; margin: auto;">
 				<table style="
@@ -103,6 +80,24 @@
 				</table>
 			</div>
 
+			<!-- Loader icon - hidden -->
+			<div style="margin: auto; width: max-content; display: none;" id="searchLoader">
+				<div class="lds-spinner">
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
+				</div>
+			</div>
+
 			<br>
 			<br>
 
@@ -110,7 +105,18 @@
 			<header class="align-center">
 				<h2><u>Your Data</u></h2>
 				<h4>Click on an item to remove it</h4>
+				<div style="text-align: center; margin: auto; width: 100%; height: fit-content;">
+					<label for="outputFreq" style="float: left;">Normalize date
+						frequency:&nbsp;&nbsp;</label>
+					<select id="outputFreq" style="width: fit-content;">
+						<option value="daily">Daily</option>
+						<option value="weekly">Weekly</option>
+						<option value="monthly">Monthly</option>
+						<option value="quarterly">Quarterly</option>
+					</select>
+				</div>
 			</header>
+			<br>
 
 			<div class="table-wrapper" style="max-height: 850px; margin: auto;">
 				<table style="
@@ -126,6 +132,7 @@
 							<th>Start Date</th>
 							<th>End Date</th>
 							<th>Units</th>
+							<th>Adj Method</th>
 							<!-- Units should have units short, and seasonal adj note -->
 							<!-- 'title', 'frequency', 'frequency_short', 'observation_start', 'observation_end', 'tix' -->
 						</tr>
@@ -133,6 +140,18 @@
 					<tbody id="compTableBody" style="text-align: left;">
 					</tbody>
 				</table>
+			</div>
+
+			<br>
+			<br>
+
+			<div style="margin: auto; text-align: center;">
+
+				<input type="submit" value="Download Data">
+
+				<!-- <select></select>
+				<input id="randomFoods" type="button" class="button" value="Randomize Foods"
+					style="width: 175px; padding: 0;"> -->
 			</div>
 
 			<!-- Old table -->
