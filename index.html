@@ -36,7 +36,7 @@
 
 	<!-- Main -->
 	<section id="main" class="wrapper">
-		<div class="inner" style="max-width: 1200px;">
+		<div class="inner" style="max-width: 1500px;">
 			<header class="align-center" style="margin-bottom: 35px;">
 				<h2>Stitch together datasets from <u style="color: green;"><a href="https://fred.stlouisfed.org/"
 							target="_blank">FRED</a></u></h2>
@@ -66,7 +66,7 @@
 				margin: auto;">
 					<thead style="top: 0; position: sticky; background-color: white;">
 						<tr>
-							<th>Name</th>
+							<th style="width: 500px;">Name</th>
 							<th>Frequency</th>
 							<th>Start Date</th>
 							<th>End Date</th>
@@ -104,18 +104,19 @@
 			<!-- Comparison List -->
 			<header class="align-center">
 				<h2><u>Your Data</u></h2>
-				<h4>Click on an item to remove it</h4>
-				<div style="text-align: center; margin: auto; width: 100%; height: fit-content;">
-					<label for="outputFreq" style="float: left;">Normalize date
+				<br>
+				<div style="text-align: center; margin: auto; width: fit-content; height: 52.5px;">
+					<label for="outputFreq" style="float: left; margin: auto;">Normalize date
 						frequency:&nbsp;&nbsp;</label>
-					<select id="outputFreq" style="width: fit-content;">
-						<option value="daily">Daily</option>
-						<option value="weekly">Weekly</option>
-						<option value="monthly">Monthly</option>
-						<option value="quarterly">Quarterly</option>
+					<select id="outputFreq" style="width: fit-content; appearance: menulist;">
+						<option value="D">Daily</option>
+						<option value="W">Weekly</option>
+						<option value="M">Monthly</option>
+						<option value="Q">Quarterly</option>
 					</select>
 				</div>
 			</header>
+			<br>
 			<br>
 
 			<div class="table-wrapper" style="max-height: 850px; margin: auto;">
@@ -127,12 +128,13 @@
 							margin: auto;">
 					<thead style="top: 0; position: sticky; background-color: white;">
 						<tr>
-							<th>Name</th>
+							<th style="width: 500px;">Name</th>
 							<th>Frequency</th>
 							<th>Start Date</th>
 							<th>End Date</th>
 							<th>Units</th>
 							<th>Adj Method</th>
+							<th>Remove</th>
 							<!-- Units should have units short, and seasonal adj note -->
 							<!-- 'title', 'frequency', 'frequency_short', 'observation_start', 'observation_end', 'tix' -->
 						</tr>

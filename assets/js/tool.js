@@ -3,13 +3,56 @@
 
     $(function onDocReady() {
 
-        // $('#searchForm').submit(fredSearch);
+        // Add search button listener
         $('#searchForm').on('submit', function (event) {
             event.preventDefault();
             fredSearch();
         })
 
+        // Add target date frequency listener
+        $('#outputFreq').change(outputFreqChange)
+
     });
+
+    function outputFreqChange() {
+        // console.log('test')
+        // Grab all rows in comp table body
+        // $('#compTableBody')[0].rows[0].cells[1]
+        var compRows = $('#compTableBody')[0].rows
+        for (i = 0; i < compRows.length; i++) {
+            // Grab current output date freq
+            var outputFreqTarget = $("#outputFreq")[0].value
+            // console.log('output val is: ' + outputFreqTarget)
+            var seriesDateFreq = compRows[i].cells[1].innerHTML
+            // console.log('series val is: ' + seriesDateFreq)
+            var outputVal = eval('freqCompRef.' + outputFreqTarget)
+            var seriesVal = eval('freqCompRef.' + seriesDateFreq)
+            if (outputVal == seriesVal) {
+                compRows[i].cells[5].innerHTML = 'None'
+            } else if (outputVal > seriesVal) {
+                compRows[i].cells[5].innerHTML =
+                    `<select style="width: fit-content;appearance: menulist;">
+                    <option title="down" value="fill" hidden>Fill</option>
+                    <option title="down" value="down_interpolate" hidden>Linear Interpolation</option>
+                    <option title="down" value="prorate" hidden>Prorate</option>
+                    <option title="up" value="average" selected>Average</option>
+                    <option title="up" value="sum">Sum</option>
+                        </select>`
+            } else {
+                compRows[i].cells[5].innerHTML =
+                    `<select style="width: fit-content;appearance: menulist;">
+                        <option title="down" value="fill">Fill</option>
+                        <option title="down" value="down_interpolate">Linear Interpolation</option>
+                        <option title="down" value="prorate">Prorate</option>
+                        <option title="up" value="average" hidden>Average</option>
+                        <option title="up" value="sum" hidden>Sum</option>
+                            </select>`
+
+            }
+        }
+    }
+
+
 
     // Function that sends search key to backend to trigger search
     function fredSearch() {
@@ -28,7 +71,8 @@
         var searchResponse = [
             ['Real User Cost Index of MSI-ALL Assets (alternative)', 'Monthly', 'M', '1967-01-01', '2013-12-01', 'OCALLA', '%', 'NSA']
             , ['Divisia Money Index: Household Sector and Private Non-Financial Corporations in the United Kingdom', 'Quarterly', 'Q', '1977-01-01', '2016-10-01', 'DMIHHPNFCUKQ', 'Index 1977:Q1=100', 'SA']
-            , ['title', 'frequency', 'frequency_short', 'observation_start', 'observation_end', 'tix', 'units_short', 'seasonal_adjustment_short']
+            , ['User Cost Index of', 'Daily', 'D', '1967-01-01', '2013-12-01', 'OCALLA', '%', 'NSA']
+            // , ['title', 'frequency', 'frequency_short', 'observation_start', 'observation_end', 'tix', 'units_short', 'seasonal_adjustment_short']
         ]
 
         searchHandler(searchResponse)
@@ -43,6 +87,13 @@
         // Add search results to table
         createSearchTable();
     }
+
+
+    // Feequency table ref
+    var freqCompRef = {
+        'D': 1, 'W': 2, 'M': 3, 'Q': 4
+    }
+
 
     function createSearchTable() {
 
@@ -101,53 +152,82 @@
                     var newItem = item.cloneNode(true);
                     item.parentNode.replaceChild(newItem, item);
 
+                    // Change cursor style
+                    newItem.style.cursor = "auto"
+
                     // console.log('This is your newitem: ')
                     // console.log(newItem)
 
                     // Add data mod option to item
-                    var tc = newItem.insertCell(-1)
-                    tc.innerHTML =
-                        `<select style="width: fit-content;">
-                    <option value="down_interpolate">Interpolate</option>
-                    <option value="weekly">Average</option>
-                    <option value="monthly">Sum</option>
-                    <option value="quarterly">Fill</option>
-                    <option value="quarterly">Prorate</option>
-                    </select>`
+                    var tcMod = newItem.insertCell(-1)
+                    // tcMod.innerHTML =
+                    //     `<select style="width: fit-content;appearance: menulist;">
+                    // <option title="down" value="fill" hidden>Fill</option>
+                    // <option title="down" value="down_interpolate" hidden>Linear Interpolation</option>
+                    // <option title="down" value="prorate" hidden>Prorate</option>
+                    // <option title="up" value="average" selected>Average</option>
+                    // <option title="up" value="sum">Sum</option>
+                    //     </select>`
 
-                    // console.log('Your data item: var xxx')
-                    // console.log(xxx = newItem)
+                    // Set options based on output data freq
+                    // Grab current output date freq
+                    var outputFreqTarget = $("#outputFreq")[0].value
+                    console.log('output val is: ' + outputFreqTarget)
+                    var seriesDateFreq = newItem.childNodes[1].innerHTML
+                    console.log('series val is: ' + seriesDateFreq)
+                    var outputVal = eval('freqCompRef.' + outputFreqTarget)
+                    var seriesVal = eval('freqCompRef.' + seriesDateFreq)
+                    if (outputVal == seriesVal) {
+                        tcMod.innerHTML = 'None'
+                    } else if (outputVal > seriesVal) {
+                        tcMod.innerHTML =
+                            `<select style="width: fit-content;appearance: menulist;">
+                        <option title="down" value="fill" hidden>Fill</option>
+                        <option title="down" value="down_interpolate" hidden>Linear Interpolation</option>
+                        <option title="down" value="prorate" hidden>Prorate</option>
+                        <option title="up" value="average" selected>Average</option>
+                        <option title="up" value="sum">Sum</option>
+                            </select>`
+                    } else {
+                        tcMod.innerHTML =
+                            `<select style="width: fit-content;appearance: menulist;">
+                    <option title="down" value="fill">Fill</option>
+                    <option title="down" value="down_interpolate">Linear Interpolation</option>
+                    <option title="down" value="prorate">Prorate</option>
+                    <option title="up" value="average" hidden>Average</option>
+                    <option title="up" value="sum" hidden>Sum</option>
+                        </select>`
 
-                    // Add item to comp table
-                    $("#compTableBody").append(newItem)
-
-                    var itemCells = newItem.querySelectorAll('td')
-                    for (i = 0; i < itemCells.length - 1; i++) {
-                        // console.log('listener for click remove is applied to: ')
-                        // console.log(itemCells[i])
-                        itemCells[i].addEventListener('click', function (e) {
-                            // console.log('This is the parent element of the clicked cell:')
-                            // console.log(itemCells[i].parentElement)
-                            itemCells[i].parentElement.remove()
-                        })
                     }
 
-                    // newItem.addEventListener('click', function (e) {
-                    //     $(this).remove()
-                    // })
+                    // Add remove item
+                    var tcRemove = newItem.insertCell(-1)
+                    tcRemove.innerHTML = '❌'
+                    tcRemove.style.cursor = "pointer"
+                    // Add item to comp table
+                    $("#compTableBody").append(newItem)
+                    // Add Remove listener
+                    tcRemove.addEventListener('click', function (e) {
+                        tcRemove.parentElement.remove()
+                    })
+
+                    // // Add remove listeners
+                    // var itemCells = newItem.querySelectorAll('td')
+                    // for (i = 0; i < itemCells.length - 1; i++) {
+                    //     // console.log('listener for click remove is applied to: ')
+                    //     // console.log(itemCells[i])
+                    //     itemCells[i].addEventListener('click', function (e) {
+                    //         // console.log('This is the parent element of the clicked cell:')
+                    //         // console.log(itemCells[i].parentElement)
+                    //         itemCells[i].parentElement.remove()
+                    //     })
+                    // }
 
 
                 })
         })
 
     }
-
-
-    //////////////////// LEFT OFF HERE - NOW NEED TO LET USER CHOOSE OUTPUT DATE FREQUENCY AND ADD OPTIONS FOR HOW TO UP/DOWN SAMPLE DATA //////////////
-    //////////////////// WHEN USER CHANGES OUTPUT DATE FREQUENCY, SHOULD CHANGE THE DATA UP/DOWN SAMPLE METHODS FOR EACH SERIES /////////////
-    //////////////////// NEED TO REFORMAT OUTPUT DATA FREQUENCY INPUT /////////////
-
-
 
 
     function searchInput() {
