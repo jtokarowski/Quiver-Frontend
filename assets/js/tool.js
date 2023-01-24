@@ -33,7 +33,7 @@
                 compRows[i].cells[5].innerHTML =
                     `<select style="width: fit-content;appearance: menulist;">
                     <option title="down" value="fill" hidden>Fill</option>
-                    <option title="down" value="down_interpolate" hidden>Linear Interpolation</option>
+                    <option title="down" value="interpolate" hidden>Linear Interpolation</option>
                     <option title="down" value="prorate" hidden>Prorate</option>
                     <option title="up" value="average" selected>Average</option>
                     <option title="up" value="sum">Sum</option>
@@ -42,7 +42,7 @@
                 compRows[i].cells[5].innerHTML =
                     `<select style="width: fit-content;appearance: menulist;">
                         <option title="down" value="fill">Fill</option>
-                        <option title="down" value="down_interpolate">Linear Interpolation</option>
+                        <option title="down" value="interpolate">Linear Interpolation</option>
                         <option title="down" value="prorate">Prorate</option>
                         <option title="up" value="average" hidden>Average</option>
                         <option title="up" value="sum" hidden>Sum</option>
@@ -60,30 +60,42 @@
         // Display loader
         $('#searchLoader').show()
 
-        var input = document.getElementById("searchInput").value;
+        var searchInput = document.getElementById("searchInput").value;
         // console.log(input)
 
-        // Send search term to backend to hit FRED API
+        // Send search term to backend
+        // https://quiver-stage.herokuapp.com/fredsearch
+        $.ajax({
+            method: 'GET',
+            url: 'https://quiver-stage.herokuapp.com/fredsearch?searchKey=' + searchInput,
+            // contentType: 'application/json',
+            success: searchHandler,
+            error: function ajaxError(jqXHR, textStatus, errorThrown) {
+                console.error('Error pulling data: ', textStatus, ', Details: ', errorThrown);
+                console.error('Response: ', jqXHR.responseText);
+                // alert('An error occured when pulling the diet DB:\n' + jqXHR.responseText);
+            }
+        });
 
-        // Recieve resposne here - temp placeholder:
 
         // Test Data
-        var searchResponse = [
-            ['Real User Cost Index of MSI-ALL Assets (alternative)', 'Monthly', 'M', '1967-01-01', '2013-12-01', 'OCALLA', '%', 'NSA']
-            , ['Divisia Money Index: Household Sector and Private Non-Financial Corporations in the United Kingdom', 'Quarterly', 'Q', '1977-01-01', '2016-10-01', 'DMIHHPNFCUKQ', 'Index 1977:Q1=100', 'SA']
-            , ['User Cost Index of', 'Daily', 'D', '1967-01-01', '2013-12-01', 'OCALLA', '%', 'NSA']
-            // , ['title', 'frequency', 'frequency_short', 'observation_start', 'observation_end', 'tix', 'units_short', 'seasonal_adjustment_short']
-        ]
+        // var searchResponse = [
+        //     ['Real User Cost Index of MSI-ALL Assets (alternative)', 'Monthly', 'M', '1967-01-01', '2013-12-01', 'OCALLA', '%', 'NSA']
+        //     , ['Divisia Money Index: Household Sector and Private Non-Financial Corporations in the United Kingdom', 'Quarterly', 'Q', '1977-01-01', '2016-10-01', 'DMIHHPNFCUKQ', 'Index 1977:Q1=100', 'SA']
+        //     , ['User Cost Index of', 'Daily', 'D', '1967-01-01', '2013-12-01', 'OCALLA', '%', 'NSA']
+        //     // , ['title', 'frequency', 'frequency_short', 'observation_start', 'observation_end', 'tix', 'units_short', 'seasonal_adjustment_short']
+        // ]
 
-        searchHandler(searchResponse)
+        // searchHandler(searchResponse)
     }
 
     // Function that recieves response data from backend and then...
     function searchHandler(searchData) {
+        tableItems = JSON.parse(searchData)
+        // console.log(tableItems)
 
         // Clear table items
-        tableItems = searchData;
-        console.log(searchData)
+        // tableItems = searchData;
         // Add search results to table
         createSearchTable();
     }
@@ -112,33 +124,43 @@
             activeData.push(comp_table_body.rows[i].id)
         }
 
-        // Exclude active dataseats from search
-        var tableSorted = tableItems.filter(x => !activeData.includes(x[5]));
+        // Remove active dataseats from search
+        // var tableSorted = tableItems.filter(x => !activeData.includes(x.id));
+        var tableSorted = []
+        for (i = 0; i < Object.keys(tableItems).length; i++) {
+            if (activeData.includes(tableItems[i].id) == false) {
+                // console.log(tableItems[i])
+                tableSorted.push(tableItems[i])
+            }
+        }
 
-        for (i = 0; i < tableSorted.length; i++) {
+        // console.log(tableSorted)
+
+
+        for (i = 0; i < Math.min(tableSorted.length, 15); i++) {
 
             var tr = table_body.insertRow(-1)
-            tr.id = tableSorted[i][5]
-            tr.title = tableSorted[i][0]
+            tr.id = tableSorted[i].id
+            tr.title = tableSorted[i].title
             tr.style.cursor = "pointer"
             // Add data
             // Name
             var tc = tr.insertCell(-1)
-            tc.innerHTML = tableSorted[i][0]
+            tc.innerHTML = tableSorted[i].title
             // Freq
             var tc = tr.insertCell(-1)
-            tc.innerHTML = tableSorted[i][2]
+            tc.innerHTML = tableSorted[i].frequency_short
             // console.log(tc)
             // tc.style = 'text-align: center;vertical-align: middle;'
             // StartDate
             var tc = tr.insertCell(-1)
-            tc.innerHTML = tableSorted[i][3]
+            tc.innerHTML = tableSorted[i].observation_start
             // EndDate
             var tc = tr.insertCell(-1)
-            tc.innerHTML = tableSorted[i][4]
+            tc.innerHTML = tableSorted[i].observation_end
             // Units
             var tc = tr.insertCell(-1)
-            tc.innerHTML = tableSorted[i][6].concat(', ', tableSorted[i][7])
+            tc.innerHTML = tableSorted[i].units_short.concat(', ', tableSorted[i].seasonal_adjustment_short)
             // tc.style.fontWeight = '900'
             // tc.style.color = tableSorted[i][5]
         }
@@ -163,7 +185,7 @@
                     // tcMod.innerHTML =
                     //     `<select style="width: fit-content;appearance: menulist;">
                     // <option title="down" value="fill" hidden>Fill</option>
-                    // <option title="down" value="down_interpolate" hidden>Linear Interpolation</option>
+                    // <option title="down" value="interpolate" hidden>Linear Interpolation</option>
                     // <option title="down" value="prorate" hidden>Prorate</option>
                     // <option title="up" value="average" selected>Average</option>
                     // <option title="up" value="sum">Sum</option>
@@ -183,7 +205,7 @@
                         tcMod.innerHTML =
                             `<select style="width: fit-content;appearance: menulist;">
                         <option title="down" value="fill" hidden>Fill</option>
-                        <option title="down" value="down_interpolate" hidden>Linear Interpolation</option>
+                        <option title="down" value="interpolate" hidden>Linear Interpolation</option>
                         <option title="down" value="prorate" hidden>Prorate</option>
                         <option title="up" value="average" selected>Average</option>
                         <option title="up" value="sum">Sum</option>
@@ -192,7 +214,7 @@
                         tcMod.innerHTML =
                             `<select style="width: fit-content;appearance: menulist;">
                     <option title="down" value="fill">Fill</option>
-                    <option title="down" value="down_interpolate">Linear Interpolation</option>
+                    <option title="down" value="interpolate">Linear Interpolation</option>
                     <option title="down" value="prorate">Prorate</option>
                     <option title="up" value="average" hidden>Average</option>
                     <option title="up" value="sum" hidden>Sum</option>
