@@ -73,7 +73,7 @@
         // https://quiver-stage.herokuapp.com/fredsearch
         $.ajax({
             method: 'GET',
-            url: 'https://quiver-stage.herokuapp.com/fredsearch?searchKey=' + searchInput,
+            url: 'https://quiver-john.herokuapp.com/fredsearch?searchKey=' + searchInput,
             // contentType: 'application/json',
             success: searchHandler,
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
@@ -259,7 +259,7 @@
             processData: false,
             method: 'POST',
             data: jsonData,
-            url: 'https://quiver-stage.herokuapp.com/retrievedata',
+            url: 'https://quiver-john.herokuapp.com/retrievedata',
             success: downloadDataHandler,
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
                 console.error('Error pulling data: ', textStatus, ', Details: ', errorThrown);
