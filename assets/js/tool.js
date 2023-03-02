@@ -256,7 +256,8 @@
         $.ajax({
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
-            method: 'GET',
+            processData: false,
+            method: 'POST',
             data: jsonData,
             url: 'https://quiver-stage.herokuapp.com/retrievedata',
             success: downloadDataHandler,
