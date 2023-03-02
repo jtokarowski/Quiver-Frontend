@@ -252,7 +252,7 @@
         console.log("API Request initiated")
 
         $.ajax({
-            method: 'POST',
+            method: 'GET',
             data: JSON.stringify({
                 requested_series_identifier_list: [
                     {
