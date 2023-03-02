@@ -253,8 +253,7 @@
 
         $.ajax({
             method: 'GET',
-            data: JSON.stringify({
-                requested_series_identifier_list: [
+            data: {requested_series_identifier_list: [
                     {
                         series_identifier: "EXHOSLUSM495S",
                         fill_methodology: "interpolate"
@@ -278,7 +277,7 @@
 
                 ],
                 target_frequency: "D"
-            }),
+            },
             url: 'https://quiver-stage.herokuapp.com/retrievedata',
             contentType: 'application/json',
             success: downloadDataHandler,
