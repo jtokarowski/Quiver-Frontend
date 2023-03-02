@@ -250,34 +250,12 @@
     function downloadData() {
 
         console.log("API Request initiated")
+        jsonData = '{requested_series_identifier_list: [{"series_identifier": "EXHOSLUSM495S","fill_methodology": "interpolate"},{"series_identifier": "CPHPTT01EZM659N","fill_methodology": "interpolate"},{"series_identifier": "HOUST","fill_methodology": "interpolate"}], "target_frequency": "D"}'
+
 
         $.ajax({
             method: 'GET',
-            data: {requested_series_identifier_list: [
-                    {
-                        series_identifier: "EXHOSLUSM495S",
-                        fill_methodology: "interpolate"
-                    },
-                    {
-                        series_identifier: "CPHPTT01EZM659N",
-                        fill_methodology: "interpolate"
-                    },
-                    {
-                        "series_identifier": "HOUST",
-                        "fill_methodology": "interpolate"
-                    },
-                    {
-                        "series_identifier": "MORTGAGE30US",
-                        "fill_methodology": "interpolate"
-                    },
-                    // {
-                    //     "series_identifier": "MORTGAGE30US",
-                    //     "fill_methodology": "interpolate"
-                    // },
-
-                ],
-                target_frequency: "D"
-            },
+            data: jsonData,
             url: 'https://quiver-stage.herokuapp.com/retrievedata',
             contentType: 'application/json',
             success: downloadDataHandler,
