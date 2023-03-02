@@ -250,7 +250,7 @@
     function downloadData() {
 
         console.log("API Request initiated")
-        jsonData = '{requested_series_identifier_list: [{"series_identifier": "EXHOSLUSM495S","fill_methodology": "interpolate"},{"series_identifier": "CPHPTT01EZM659N","fill_methodology": "interpolate"},{"series_identifier": "HOUST","fill_methodology": "interpolate"}], "target_frequency": "D"}'
+        jsonData = '{"requested_series_identifier_list": [{"series_identifier": "EXHOSLUSM495S","fill_methodology": "interpolate"},{"series_identifier": "CPHPTT01EZM659N","fill_methodology": "interpolate"},{"series_identifier": "HOUST","fill_methodology": "interpolate"}], "target_frequency": "D"}'
 
 
         $.ajax({
