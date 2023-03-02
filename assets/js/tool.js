@@ -12,6 +12,12 @@
         // Add target date frequency listener
         $('#outputFreq').change(outputFreqChange)
 
+        // Add download data button listener
+        $('#downloadDataForm').on('submit', function (event) {
+            event.preventDefault();
+            downloadData();
+        })
+
     });
 
     function outputFreqChange() {
@@ -77,16 +83,6 @@
             }
         });
 
-
-        // Test Data
-        // var searchResponse = [
-        //     ['Real User Cost Index of MSI-ALL Assets (alternative)', 'Monthly', 'M', '1967-01-01', '2013-12-01', 'OCALLA', '%', 'NSA']
-        //     , ['Divisia Money Index: Household Sector and Private Non-Financial Corporations in the United Kingdom', 'Quarterly', 'Q', '1977-01-01', '2016-10-01', 'DMIHHPNFCUKQ', 'Index 1977:Q1=100', 'SA']
-        //     , ['User Cost Index of', 'Daily', 'D', '1967-01-01', '2013-12-01', 'OCALLA', '%', 'NSA']
-        //     // , ['title', 'frequency', 'frequency_short', 'observation_start', 'observation_end', 'tix', 'units_short', 'seasonal_adjustment_short']
-        // ]
-
-        // searchHandler(searchResponse)
     }
 
     // Function that recieves response data from backend and then...
@@ -100,12 +96,11 @@
         createSearchTable();
     }
 
-
+    // DONT DELETE THIS
     // Feequency table ref
     var freqCompRef = {
         'D': 1, 'W': 2, 'M': 3, 'Q': 4
     }
-
 
     function createSearchTable() {
 
@@ -141,7 +136,7 @@
 
             var tr = table_body.insertRow(-1)
             tr.id = tableSorted[i].id
-            tr.title = tableSorted[i].title
+            tr.title = tableSorted[i].id
             tr.style.cursor = "pointer"
             // Add data
             // Name
@@ -194,9 +189,9 @@
                     // Set options based on output data freq
                     // Grab current output date freq
                     var outputFreqTarget = $("#outputFreq")[0].value
-                    console.log('output val is: ' + outputFreqTarget)
+                    // console.log('output val is: ' + outputFreqTarget)
                     var seriesDateFreq = newItem.childNodes[1].innerHTML
-                    console.log('series val is: ' + seriesDateFreq)
+                    // console.log('series val is: ' + seriesDateFreq)
                     var outputVal = eval('freqCompRef.' + outputFreqTarget)
                     var seriesVal = eval('freqCompRef.' + seriesDateFreq)
                     if (outputVal == seriesVal) {
@@ -251,110 +246,118 @@
 
     }
 
+    // Function when user clicks download dtaa button
+    function downloadData() {
 
-    function searchInput() {
-
-        var ApiKey = ''
-        var searchPhrase = 'gold'
-        var resultLimit = 5
+        console.log("API Request initiated")
 
         $.ajax({
-            method: 'GET',
-            url: 'https://api.stlouisfed.org/fred/series/search?file_type=json&limit=' + resultLimit + '&search_text=' + searchPhrase + '&api_key=' + ApiKey,
-            success: searchResponse,
+            method: 'POST',
+            data: JSON.stringify({
+                requested_series_identifier_list: [
+                    {
+                        series_identifier: "EXHOSLUSM495S",
+                        fill_methodology: "interpolate"
+                    },
+                    {
+                        series_identifier: "CPHPTT01EZM659N",
+                        fill_methodology: "interpolate"
+                    },
+                    {
+                        "series_identifier": "HOUST",
+                        "fill_methodology": "interpolate"
+                    },
+                    {
+                        "series_identifier": "MORTGAGE30US",
+                        "fill_methodology": "interpolate"
+                    },
+                    // {
+                    //     "series_identifier": "MORTGAGE30US",
+                    //     "fill_methodology": "interpolate"
+                    // },
+
+                ],
+                target_frequency: "D"
+            }),
+            url: 'https://quiver-stage.herokuapp.com/retrievedata',
+            contentType: 'application/json',
+            success: downloadDataHandler,
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
                 console.error('Error pulling data: ', textStatus, ', Details: ', errorThrown);
                 console.error('Response: ', jqXHR.responseText);
+                // alert('An error occured when pulling the diet DB:\n' + jqXHR.responseText);
             }
         });
-    }
-
-    function searchResponse(response) {
-        // console.log(response)
-        // var searchResponseTable = response
-        // console.log(searchResponseTable)
-    }
-
-
-
-    function setInitial(response) {
-        yourFoodsTable();
-        setInitialTable();
 
     }
 
-    var grades = ['A', 'B', 'C', 'D', 'F']
-    var colors = ['darkgreen', 'yellowgreen', 'gold', 'orange', 'red']
+    function downloadDataHandler(response) {
+        dataResponse = JSON.parse(response)
+        console.log(dataResponse)
+        // dataResponseTest = jsonToCsv(dataResponse)
 
-    function yourFoodsTable() {
-        // clear list
-        $("#compList").empty();
+        // Keys
+        // Object.keys(Object.values(dataResponse)[0][0])
 
-        var compListItems = [];
-        for (i = 0; i < yourFoods.length; i++) {
-            var index = foodDB.findIndex((e) => e[4] == yourFoods[i])
-            var food = foodDB[index][0]
-            var grade = foodDB[index][3]
-            var score = foodDB[index][2]
-            var id = yourFoods[i]
-            var colorIndex = grades.findIndex((e) => e == grade)
-            var color = colors[colorIndex]
-            var newItem = '<li class="w3-display-container" style="display: flex;cursor: pointer;" id="' + id + '"; title="' + score + '"><span style="margin: auto; margin-left: 0; margin-right: 10px;">' + food + '</span><span style="margin: auto; color: ' + color + '; margin-right: 0px;">' + grade + '</span></li>';
-            compListItems.push([score, newItem])
-            // var newItem = '<li class="w3-display-container" style="display: flex;" onclick="this.style.display=&quot;none&quot;" id="' + id + '"; title="' + score + '"><span style="margin: auto; margin-left: 0; margin-right: 10px;">' + food + '</span><span style="margin: auto; color: ' + color + '; margin-right: 0px;">' + grade + '</span></li>';
-            // $("#compList").append(newItem);
-        }
-
-        // Rank list by score descending
-        var compListSorted = compListItems.sort(function (a, b) {
-            return b[0] - a[0];
-        });
-        // Then push list
-        for (i = 0; i < compListSorted.length; i++) {
-            $("#compList").append(compListSorted[i][1]);
-        }
+        // Values
+        // Object.values(Object.values(dataResponse)[0])[0]
 
 
-        document.querySelectorAll('li').forEach(item => {
-            // console.log(item)
-            if (item.className == 'w3-display-container') {
-                item.addEventListener('click', function () {
-                    yourFoods = yourFoods.filter(x => x != item.id);
-                    item.remove();
-                })
+
+        // for (i = 0; i < Object.keys(tableItems).length; i++) {
+        //     if (activeData.includes(tableItems[i].id) == false) {
+        //         // console.log(tableItems[i])
+        //         tableSorted.push(tableItems[i])
+        //     }
+        // }
+
+
+
+    }
+
+    function jsonToCsv(items) {
+        const header = Object.keys(items);
+        header.unshift('date')
+        // const headerString = header.join(',');
+        outputArray = []
+        outputArray.push(header)
+        // For every date
+        for (i = 0; i < Object.keys(Object.values(dataResponse)[0]).length; i++) {
+            var newItem = []
+            var rowDate = Object.keys(Object.values(dataResponse)[0])[i]
+            newItem.push(rowDate)
+            // Add all columns
+            for (j = 0; j < Object.keys(dataResponse).length; j++) {
+                newItem.push(Object.values(Object.values(dataResponse)[j])[i])
             }
-        })
+            outputArray.push(newItem)
+        }
 
-        // setInitialTable();
-        // createTable();
+        console.log(outputArray)
+
+
+
+
+
+
+        // handle null or undefined values here
+        // const replacer = (key, value) => value ?? '';
+        // const rowItems = Object.values(dataResponse).map((row) =>
+        //     header
+        //         .map((fieldName) => JSON.stringify(row[fieldName], replacer))
+        //         .join(',')
+        // );
+        // join header and body, and break into separate lines
+        // const csv = [headerString, ...rowItems].join('\r\n');
+        // return csv;
     }
-
-    // Sets random list of foods
-    // function setInitialTable() {
-    //     // Create array of items 
-    //     tableItems = [];
-    //     for (i = 1; i < 11; i++) {
-    //         // Random items
-    //         var index = Math.trunc(Math.random() * 6000)
-    //         if (!yourFoods.includes(foodDB[index][4])) {
-    //             var food = foodDB[index][0]
-    //             var category = foodDB[index][1]
-    //             var score = foodDB[index][2]
-    //             var grade = foodDB[index][3]
-    //             var colorIndex = grades.findIndex((e) => e == grade)
-    //             var color = colors[colorIndex]
-    //             var id = foodDB[index][4]
-    //             tableItems.push([index, food, category, score, grade, color, id])
-    //         }
-    //     }
-
-    //     createTable();
-
-    // }
-
-
-
-
+    // const obj = [
+    //     { color: 'red', maxSpeed: 120, age: 2 },
+    //     { color: 'blue', maxSpeed: 100, age: 3 },
+    //     { color: 'green', maxSpeed: 130, age: 2 },
+    // ];
+    // const csv = jsonToCsv(obj);
+    // console.log(csv);
 
 
 
