@@ -67,10 +67,7 @@
         $('#searchLoader').show()
 
         var searchInput = document.getElementById("searchInput").value;
-        // console.log(input)
-
-        // Send search term to backend
-        // https://quiver-stage.herokuapp.com/fredsearch
+       
         $.ajax({
             method: 'GET',
             url: 'https://quiver-john.herokuapp.com/fredsearch?searchKey=' + searchInput,
@@ -79,7 +76,6 @@
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
                 console.error('Error pulling data: ', textStatus, ', Details: ', errorThrown);
                 console.error('Response: ', jqXHR.responseText);
-                // alert('An error occured when pulling the diet DB:\n' + jqXHR.responseText);
             }
         });
 
@@ -88,16 +84,12 @@
     // Function that recieves response data from backend and then...
     function searchHandler(searchData) {
         tableItems = JSON.parse(searchData)
-        // console.log(tableItems)
-
-        // Clear table items
-        // tableItems = searchData;
         // Add search results to table
         createSearchTable();
     }
 
     // DONT DELETE THIS
-    // Feequency table ref
+    // Frequency table ref
     var freqCompRef = {
         'D': 1, 'W': 2, 'M': 3, 'Q': 4
     }
@@ -128,9 +120,6 @@
                 tableSorted.push(tableItems[i])
             }
         }
-
-        // console.log(tableSorted)
-
 
         for (i = 0; i < Math.min(tableSorted.length, 15); i++) {
 
@@ -172,20 +161,9 @@
                     // Change cursor style
                     newItem.style.cursor = "auto"
 
-                    // console.log('This is your newitem: ')
-                    // console.log(newItem)
-
                     // Add data mod option to item
                     var tcMod = newItem.insertCell(-1)
-                    // tcMod.innerHTML =
-                    //     `<select style="width: fit-content;appearance: menulist;">
-                    // <option title="down" value="fill" hidden>Fill</option>
-                    // <option title="down" value="interpolate" hidden>Linear Interpolation</option>
-                    // <option title="down" value="prorate" hidden>Prorate</option>
-                    // <option title="up" value="average" selected>Average</option>
-                    // <option title="up" value="sum">Sum</option>
-                    //     </select>`
-
+                  
                     // Set options based on output data freq
                     // Grab current output date freq
                     var outputFreqTarget = $("#outputFreq")[0].value
@@ -228,19 +206,6 @@
                         tcRemove.parentElement.remove()
                     })
 
-                    // // Add remove listeners
-                    // var itemCells = newItem.querySelectorAll('td')
-                    // for (i = 0; i < itemCells.length - 1; i++) {
-                    //     // console.log('listener for click remove is applied to: ')
-                    //     // console.log(itemCells[i])
-                    //     itemCells[i].addEventListener('click', function (e) {
-                    //         // console.log('This is the parent element of the clicked cell:')
-                    //         // console.log(itemCells[i].parentElement)
-                    //         itemCells[i].parentElement.remove()
-                    //     })
-                    // }
-
-
                 })
         })
 
@@ -255,8 +220,6 @@
 
         $.ajax({
             contentType: 'application/json; charset=utf-8',
-            dataType: 'json',
-            processData: false,
             method: 'POST',
             data: jsonData,
             url: 'https://quiver-john.herokuapp.com/retrievedata',
@@ -264,82 +227,23 @@
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
                 console.error('Error pulling data: ', textStatus, ', Details: ', errorThrown);
                 console.error('Response: ', jqXHR.responseText);
-                // alert('An error occured when pulling the diet DB:\n' + jqXHR.responseText);
             }
         });
 
     }
 
     function downloadDataHandler(response) {
-        dataResponse = JSON.parse(response)
-        console.log(dataResponse)
-        // dataResponseTest = jsonToCsv(dataResponse)
+        console.log(response)
 
-        // Keys
-        // Object.keys(Object.values(dataResponse)[0][0])
-
-        // Values
-        // Object.values(Object.values(dataResponse)[0])[0]
-
-
-
-        // for (i = 0; i < Object.keys(tableItems).length; i++) {
-        //     if (activeData.includes(tableItems[i].id) == false) {
-        //         // console.log(tableItems[i])
-        //         tableSorted.push(tableItems[i])
-        //     }
-        // }
-
-
-
+        const anchor = document.createElement("a");
+        anchor.href = 'https://quiver-john.herokuapp.com/test_download';
+        anchor.download = "returned csv";
+        
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+      
     }
-
-    function jsonToCsv(items) {
-        const header = Object.keys(items);
-        header.unshift('date')
-        // const headerString = header.join(',');
-        outputArray = []
-        outputArray.push(header)
-        // For every date
-        for (i = 0; i < Object.keys(Object.values(dataResponse)[0]).length; i++) {
-            var newItem = []
-            var rowDate = Object.keys(Object.values(dataResponse)[0])[i]
-            newItem.push(rowDate)
-            // Add all columns
-            for (j = 0; j < Object.keys(dataResponse).length; j++) {
-                newItem.push(Object.values(Object.values(dataResponse)[j])[i])
-            }
-            outputArray.push(newItem)
-        }
-
-        console.log(outputArray)
-
-
-
-
-
-
-        // handle null or undefined values here
-        // const replacer = (key, value) => value ?? '';
-        // const rowItems = Object.values(dataResponse).map((row) =>
-        //     header
-        //         .map((fieldName) => JSON.stringify(row[fieldName], replacer))
-        //         .join(',')
-        // );
-        // join header and body, and break into separate lines
-        // const csv = [headerString, ...rowItems].join('\r\n');
-        // return csv;
-    }
-    // const obj = [
-    //     { color: 'red', maxSpeed: 120, age: 2 },
-    //     { color: 'blue', maxSpeed: 100, age: 3 },
-    //     { color: 'green', maxSpeed: 130, age: 2 },
-    // ];
-    // const csv = jsonToCsv(obj);
-    // console.log(csv);
-
-
-
 
 }(jQuery));
 
