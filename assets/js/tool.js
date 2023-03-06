@@ -233,15 +233,13 @@
     }
 
     function downloadDataHandler(response) {
-        console.log(response)
-
-        const anchor = document.createElement("a");
-        anchor.href = 'https://quiver-john.herokuapp.com/test_download';
-        anchor.download = "returned csv";
-        
-        document.body.appendChild(anchor);
-        anchor.click();
-        document.body.removeChild(anchor);
+        var download_link = document.createElement("a");
+        download_link.href = "data:text/csv;charset=utf-8," + encodeURIComponent(response);
+        download_link.download = "fred_data.csv";
+        // Trigger the download link
+        document.body.appendChild(download_link);
+        download_link.click();
+        document.body.removeChild(download_link);
       
     }
 
