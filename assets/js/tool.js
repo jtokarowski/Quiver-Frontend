@@ -67,7 +67,7 @@
         $('#searchLoader').show()
 
         var searchInput = document.getElementById("searchInput").value;
-       
+
         $.ajax({
             method: 'GET',
             url: 'https://quiver-john.herokuapp.com/fredsearch?searchKey=' + searchInput,
@@ -163,7 +163,7 @@
 
                     // Add data mod option to item
                     var tcMod = newItem.insertCell(-1)
-                  
+
                     // Set options based on output data freq
                     // Grab current output date freq
                     var outputFreqTarget = $("#outputFreq")[0].value
@@ -214,9 +214,36 @@
     // Function when user clicks download dtaa button
     function downloadData() {
 
-        console.log("API Request initiated")
-        jsonData = '{"requested_series_identifier_list": [{"series_identifier": "EXHOSLUSM495S","fill_methodology": "interpolate"},{"series_identifier": "CPHPTT01EZM659N","fill_methodology": "interpolate"},{"series_identifier": "HOUST","fill_methodology": "interpolate"}], "target_frequency": "D"}'
+        tableData = $('#compTableBody')
+        if (tableData[0].rows.length == 0) {
+            alert('No data selected')
+            throw "No data selected"
+        }
+        var seriesArray = []
+        // Loop through 'My Data'
+        for (i = 0; i < tableData[0].rows.length; i++) {
 
+            var seriesID = tableData[0].rows[i].id
+            if (tableData[0].rows[i].children[5].innerHTML == 'None') {
+                var fillMethod = 'None'
+            } else {
+                var fillMethod = tableData[0].rows[i].children[5].children[0].selectedOptions[0].value
+            }
+
+            seriesArray.push({ "series_identifier": seriesID, "fill_methodology": fillMethod })
+
+        }
+
+        // Target output freq
+        // var outputTarget = $('#outputFreq').selectedOptions[0].value
+        var outputTarget = document.getElementById('outputFreq').selectedOptions[0].value
+
+        var jsonData = JSON.stringify({ "requested_series_identifier_list": seriesArray, "target_frequency": outputTarget })
+        // var jsonData = '{"requested_series_identifier_list": [{"series_identifier": "EXHOSLUSM495S","fill_methodology": "interpolate"},{"series_identifier": "CPHPTT01EZM659N","fill_methodology": "interpolate"},{"series_identifier": "HOUST","fill_methodology": "interpolate"}], "target_frequency": "D"}'
+
+        console.log('Input data')
+        console.log(jsonData)
+        console.log("API Request initiated")
 
         $.ajax({
             contentType: 'application/json; charset=utf-8',
@@ -240,7 +267,7 @@
         document.body.appendChild(download_link);
         download_link.click();
         document.body.removeChild(download_link);
-      
+
     }
 
 }(jQuery));
