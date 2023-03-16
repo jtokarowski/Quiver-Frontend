@@ -1,6 +1,8 @@
 
 (function inputScopeWrapper($) {
 
+    var base_url = 'http://localhost:3000/'
+
     $(function onDocReady() {
 
         // Add search button listener
@@ -70,7 +72,7 @@
 
         $.ajax({
             method: 'GET',
-            url: 'https://quiver-stage.herokuapp.com/fredsearch?searchKey=' + searchInput,
+            url: base_url + 'fredsearch?searchKey=' + searchInput,
             // contentType: 'application/json',
             success: searchHandler,
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
@@ -249,7 +251,7 @@
             contentType: 'application/json; charset=utf-8',
             method: 'POST',
             data: jsonData,
-            url: 'https://quiver-stage.herokuapp.com/retrievedata',
+            url: base_url + 'retrievedata',
             success: downloadDataHandler,
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
                 console.error('Error pulling data: ', textStatus, ', Details: ', errorThrown);
