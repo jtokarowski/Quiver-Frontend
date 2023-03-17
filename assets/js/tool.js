@@ -1,6 +1,8 @@
 
 (function inputScopeWrapper($) {
 
+    var base_url = 'http://localhost:3000/'
+
     $(function onDocReady() {
 
         // Add search button listener
@@ -15,6 +17,10 @@
         // Add download data button listener
         $('#downloadDataForm').on('submit', function (event) {
             event.preventDefault();
+            // Show loader, hide button
+            $('#downloadLoader').show()
+            $('#downloadDataForm').hide()
+            // Grab data
             downloadData();
         })
 
@@ -70,12 +76,14 @@
 
         $.ajax({
             method: 'GET',
-            url: 'https://quiver-stage.herokuapp.com/fredsearch?searchKey=' + searchInput,
+            url: base_url + 'fredsearch?searchKey=' + searchInput,
             // contentType: 'application/json',
             success: searchHandler,
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
                 console.error('Error pulling data: ', textStatus, ', Details: ', errorThrown);
                 console.error('Response: ', jqXHR.responseText);
+                $('#searchLoader').hide()
+                alert('Error querying FRED')
             }
         });
 
@@ -249,11 +257,14 @@
             contentType: 'application/json; charset=utf-8',
             method: 'POST',
             data: jsonData,
-            url: 'https://quiver-stage.herokuapp.com/retrievedata',
+            url: base_url + 'retrievedata',
             success: downloadDataHandler,
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
                 console.error('Error pulling data: ', textStatus, ', Details: ', errorThrown);
                 console.error('Response: ', jqXHR.responseText);
+                $('#downloadLoader').hide()
+                $('#downloadDataForm').show()
+                alert('Error downloading data')
             }
         });
 
@@ -267,7 +278,8 @@
         document.body.appendChild(download_link);
         download_link.click();
         document.body.removeChild(download_link);
-
+        $('#downloadLoader').hide()
+        $('#downloadDataForm').show()
     }
 
 }(jQuery));
