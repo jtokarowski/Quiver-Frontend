@@ -17,6 +17,10 @@
         // Add download data button listener
         $('#downloadDataForm').on('submit', function (event) {
             event.preventDefault();
+            // Show loader, hide button
+            $('#downloadLoader').show()
+            $('#downloadDataForm').hide()
+            // Grab data
             downloadData();
         })
 
@@ -78,6 +82,8 @@
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
                 console.error('Error pulling data: ', textStatus, ', Details: ', errorThrown);
                 console.error('Response: ', jqXHR.responseText);
+                $('#searchLoader').hide()
+                alert('Error querying FRED')
             }
         });
 
@@ -256,6 +262,9 @@
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
                 console.error('Error pulling data: ', textStatus, ', Details: ', errorThrown);
                 console.error('Response: ', jqXHR.responseText);
+                $('#downloadLoader').hide()
+                $('#downloadDataForm').show()
+                alert('Error downloading data')
             }
         });
 
@@ -269,7 +278,8 @@
         document.body.appendChild(download_link);
         download_link.click();
         document.body.removeChild(download_link);
-
+        $('#downloadLoader').hide()
+        $('#downloadDataForm').show()
     }
 
 }(jQuery));
