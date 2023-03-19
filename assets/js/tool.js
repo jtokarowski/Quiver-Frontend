@@ -1,7 +1,8 @@
 
 (function inputScopeWrapper($) {
 
-    var base_url = 'http://localhost:3000/'
+    // var base_url = 'http://localhost:3000/'
+    var base_url = 'https://quiver-stage.herokuapp.com/'
 
     $(function onDocReady() {
 
