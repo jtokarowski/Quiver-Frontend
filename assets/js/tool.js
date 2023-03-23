@@ -46,8 +46,8 @@
             } else if (outputVal > seriesVal) {
                 compRows[i].cells[5].innerHTML =
                     `<select style="width: fit-content;appearance: menulist;">
-                    <option title="down" value="fill" hidden>Fill</option>
                     <option title="down" value="interpolate" hidden>Linear Interpolation</option>
+                    <option title="down" value="fill" hidden>Fill</option>
                     <option title="down" value="prorate" hidden>Prorate</option>
                     <option title="up" value="average" selected>Average</option>
                     <option title="up" value="sum">Sum</option>
@@ -55,8 +55,8 @@
             } else {
                 compRows[i].cells[5].innerHTML =
                     `<select style="width: fit-content;appearance: menulist;">
-                        <option title="down" value="fill">Fill</option>
                         <option title="down" value="interpolate">Linear Interpolation</option>
+                        <option title="down" value="fill">Fill</option>
                         <option title="down" value="prorate">Prorate</option>
                         <option title="up" value="average" hidden>Average</option>
                         <option title="up" value="sum" hidden>Sum</option>
@@ -187,8 +187,8 @@
                     } else if (outputVal > seriesVal) {
                         tcMod.innerHTML =
                             `<select style="width: fit-content;appearance: menulist;">
-                        <option title="down" value="fill" hidden>Fill</option>
                         <option title="down" value="interpolate" hidden>Linear Interpolation</option>
+                        <option title="down" value="fill" hidden>Fill</option>
                         <option title="down" value="prorate" hidden>Prorate</option>
                         <option title="up" value="average" selected>Average</option>
                         <option title="up" value="sum">Sum</option>
@@ -196,8 +196,8 @@
                     } else {
                         tcMod.innerHTML =
                             `<select style="width: fit-content;appearance: menulist;">
-                    <option title="down" value="fill">Fill</option>
-                    <option title="down" value="interpolate">Linear Interpolation</option>
+                        <option title="down" value="interpolate">Linear Interpolation</option>
+                        <option title="down" value="fill">Fill</option>
                     <option title="down" value="prorate">Prorate</option>
                     <option title="up" value="average" hidden>Average</option>
                     <option title="up" value="sum" hidden>Sum</option>
@@ -236,6 +236,8 @@
             var seriesID = tableData[0].rows[i].id
             if (tableData[0].rows[i].children[5].innerHTML == 'None') {
                 var fillMethod = 'None'
+                // Test auto fill to linear interpolation for missing data - doing in backend
+                // var fillMethod = 'interpolate'
             } else {
                 var fillMethod = tableData[0].rows[i].children[5].children[0].selectedOptions[0].value
             }
